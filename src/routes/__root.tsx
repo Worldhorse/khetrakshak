@@ -77,11 +77,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "KhetRakshak — Crop Disease Detection" },
+      {
+        name: "description",
+        content:
+          "KhetRakshak helps farmers detect crop disease from a photo and lets verified institutes grow the disease image dataset.",
+      },
+      { name: "author", content: "KhetRakshak" },
+      { property: "og:title", content: "KhetRakshak — Crop Disease Detection" },
+      {
+        property: "og:description",
+        content: "Detect crop disease from a photo and grade it in four conditions.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
