@@ -8,6 +8,13 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   CONDITION_LABELS,
@@ -15,6 +22,14 @@ import {
   type Condition,
   type DetectionResult,
 } from "@/lib/detect.functions";
+import {
+  BLOCKS,
+  RISK_LABELS,
+  addSubmission,
+  fuseRisk,
+  type Fusion,
+} from "@/lib/risk";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -52,7 +67,13 @@ function Home() {
   const [cropHint, setCropHint] = useState("");
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<DetectionResult | null>(null);
+  const [blockId, setBlockId] = useState(BLOCKS[0]!.id);
+  const [trap, setTrap] = useState("");
+  const [fusion, setFusion] = useState<Fusion | null>(null);
+  const [lang, setLang] = useState<"en" | "hi">("en");
   const fileRef = useRef<HTMLInputElement>(null);
+
+  const block = BLOCKS.find((b) => b.id === blockId)!;
 
   function onFile(file: File | undefined) {
     if (!file) return;
@@ -64,6 +85,7 @@ function Home() {
     reader.onload = () => {
       setPreview(reader.result as string);
       setResult(null);
+      setFusion(null);
     };
     reader.readAsDataURL(file);
   }
@@ -72,18 +94,40 @@ function Home() {
     if (!preview) return;
     setBusy(true);
     setResult(null);
+    setFusion(null);
     try {
       const res = await detect({
         data: { imageDataUrl: preview, ...(cropHint ? { cropHint } : {}) },
       });
       setResult(res);
-      if (!res.isPlant) toast.warning("That photo doesn't look like a crop. Try a clear leaf close-up.");
+      if (!res.isPlant) {
+        toast.warning("That photo doesn't look like a crop. Try a clear leaf close-up.");
+        return;
+      }
+      const f = fuseRisk({
+        condition: res.condition,
+        confidence: res.confidence,
+        block,
+        trapCount: trap.trim() === "" ? null : Number(trap),
+      });
+      setFusion(f);
+      addSubmission({
+        id: crypto.randomUUID(),
+        at: Date.now(),
+        blockId: block.id,
+        crop: res.crop,
+        disease: res.disease,
+        condition: res.condition,
+        score: f.score,
+        status: "pending",
+      });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "The check failed. Please try again.");
     } finally {
       setBusy(false);
     }
   }
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -155,10 +199,44 @@ function Home() {
                 placeholder="Tomato, rice, cotton…"
               />
             </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-2">
+                <Label htmlFor="block">Block / region</Label>
+                <Select value={blockId} onValueChange={setBlockId}>
+                  <SelectTrigger id="block">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {BLOCKS.map((b) => (
+                      <SelectItem key={b.id} value={b.id}>
+                        {b.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="trap">Pest-trap count (last 24h)</Label>
+                <Input
+                  id="trap"
+                  type="number"
+                  min={0}
+                  value={trap}
+                  onChange={(e) => setTrap(e.target.value)}
+                  placeholder="e.g. 12"
+                />
+              </div>
+            </div>
+            <p className="rounded-lg bg-muted/60 px-3 py-2 text-xs text-muted-foreground">
+              Weather &amp; soil for this block: {block.tempC}°C · {block.humidity}% humidity ·{" "}
+              {block.soil}. Leave the trap count blank if you have no trap — the other signals are
+              reweighted.
+            </p>
             <Button onClick={runCheck} disabled={!preview || busy} size="lg">
               {busy ? <Loader2 className="size-4 animate-spin" /> : <ShieldCheck className="size-4" />}
               {busy ? "Checking the leaf…" : "Detect disease"}
             </Button>
+
           </CardContent>
         </Card>
 
@@ -181,6 +259,70 @@ function Home() {
               ))}
             </CardContent>
           </Card>
+
+          {fusion ? (
+            <Card className="shadow-field">
+              <CardHeader>
+                <div className={`h-2 w-full rounded-full ${RISK_LABELS[fusion.level].className}`} />
+                <div className="flex items-center justify-between gap-2 pt-3">
+                  <CardTitle className="text-2xl">
+                    {lang === "hi" ? RISK_LABELS[fusion.level].hi : RISK_LABELS[fusion.level].en} ·{" "}
+                    {fusion.score}/100
+                  </CardTitle>
+                  <div className="flex gap-1">
+                    {(["en", "hi"] as const).map((l) => (
+                      <Button
+                        key={l}
+                        size="sm"
+                        variant={lang === l ? "default" : "outline"}
+                        onClick={() => setLang(l)}
+                      >
+                        {l === "en" ? "English" : "हिंदी"}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+                <CardDescription>
+                  {lang === "hi"
+                    ? "फ़ोटो, मौसम, ट्रैप गिनती और इलाके के इतिहास को मिलाकर बनाया गया जोखिम स्कोर।"
+                    : "Fused from your photo, block weather & soil, trap count and local outbreak history."}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-4 text-sm">
+                <div className="grid gap-2">
+                  {fusion.signals.map((s) => (
+                    <div key={s.key} className="grid grid-cols-[9rem_1fr_3rem] items-center gap-2">
+                      <span className="text-muted-foreground">{s.label}</span>
+                      <span className="h-2 rounded-full bg-muted">
+                        <span
+                          className="block h-2 rounded-full bg-primary"
+                          style={{ width: `${s.value}%` }}
+                        />
+                      </span>
+                      <span className="text-right text-xs text-muted-foreground">{s.weight}%</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {["App", "WhatsApp", "SMS", "IVR call"].map((chan) => (
+                    <Button
+                      key={chan}
+                      size="sm"
+                      variant="outline"
+                      onClick={() => toast.success(`Alert queued to ${chan}.`)}
+                    >
+                      Send by {chan}
+                    </Button>
+                  ))}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  This check was added to the {block.id} verification queue for the block officer.
+                </p>
+              </CardContent>
+            </Card>
+          ) : null}
+
+
 
           {result ? (
             <Card className="shadow-field">
