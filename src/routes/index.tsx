@@ -8,6 +8,13 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   CONDITION_LABELS,
@@ -15,6 +22,14 @@ import {
   type Condition,
   type DetectionResult,
 } from "@/lib/detect.functions";
+import {
+  BLOCKS,
+  RISK_LABELS,
+  addSubmission,
+  fuseRisk,
+  type Fusion,
+} from "@/lib/risk";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
