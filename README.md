@@ -27,4 +27,4 @@ https://khetrakshak.lovable.app
 # Status
 🚧 Work in progress.
 
-[ P.S We assure you that if we are selected, we will improve the README to a whole new level :) ]
+[ P.S We assure you that if we are selected, we will improve the README to a whole new level cause VibeCoding 😎 :) ]
