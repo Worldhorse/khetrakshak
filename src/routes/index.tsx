@@ -199,10 +199,44 @@ function Home() {
                 placeholder="Tomato, rice, cotton…"
               />
             </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-2">
+                <Label htmlFor="block">Block / region</Label>
+                <Select value={blockId} onValueChange={setBlockId}>
+                  <SelectTrigger id="block">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {BLOCKS.map((b) => (
+                      <SelectItem key={b.id} value={b.id}>
+                        {b.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="trap">Pest-trap count (last 24h)</Label>
+                <Input
+                  id="trap"
+                  type="number"
+                  min={0}
+                  value={trap}
+                  onChange={(e) => setTrap(e.target.value)}
+                  placeholder="e.g. 12"
+                />
+              </div>
+            </div>
+            <p className="rounded-lg bg-muted/60 px-3 py-2 text-xs text-muted-foreground">
+              Weather &amp; soil for this block: {block.tempC}°C · {block.humidity}% humidity ·{" "}
+              {block.soil}. Leave the trap count blank if you have no trap — the other signals are
+              reweighted.
+            </p>
             <Button onClick={runCheck} disabled={!preview || busy} size="lg">
               {busy ? <Loader2 className="size-4 animate-spin" /> : <ShieldCheck className="size-4" />}
               {busy ? "Checking the leaf…" : "Detect disease"}
             </Button>
+
           </CardContent>
         </Card>
 
