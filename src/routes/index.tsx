@@ -29,6 +29,10 @@ import {
   fuseRisk,
   type Fusion,
 } from "@/lib/risk";
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+
+const SIGNAL_COLORS = ["var(--primary)", "var(--mild)", "var(--moderate)", "var(--severe)"];
+
 
 
 export const Route = createFileRoute("/")({
