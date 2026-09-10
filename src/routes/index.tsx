@@ -418,6 +418,12 @@ function Home() {
           )}
         </div>
       </main>
+
+      <footer className="border-t border-border bg-muted/30 py-6 text-center">
+        <p className="mx-auto max-w-3xl px-4 text-xs text-muted-foreground">
+          KhetRakshak — Innovation Felonies · SIH 2026 · Prototype build. Image analysis, weather/soil and trap counts are demo-scale approximations.
+        </p>
+      </footer>
     </div>
   );
 }
