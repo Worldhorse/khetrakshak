@@ -260,6 +260,70 @@ function Home() {
             </CardContent>
           </Card>
 
+          {fusion ? (
+            <Card className="shadow-field">
+              <CardHeader>
+                <div className={`h-2 w-full rounded-full ${RISK_LABELS[fusion.level].className}`} />
+                <div className="flex items-center justify-between gap-2 pt-3">
+                  <CardTitle className="text-2xl">
+                    {lang === "hi" ? RISK_LABELS[fusion.level].hi : RISK_LABELS[fusion.level].en} ·{" "}
+                    {fusion.score}/100
+                  </CardTitle>
+                  <div className="flex gap-1">
+                    {(["en", "hi"] as const).map((l) => (
+                      <Button
+                        key={l}
+                        size="sm"
+                        variant={lang === l ? "default" : "outline"}
+                        onClick={() => setLang(l)}
+                      >
+                        {l === "en" ? "English" : "हिंदी"}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+                <CardDescription>
+                  {lang === "hi"
+                    ? "फ़ोटो, मौसम, ट्रैप गिनती और इलाके के इतिहास को मिलाकर बनाया गया जोखिम स्कोर।"
+                    : "Fused from your photo, block weather & soil, trap count and local outbreak history."}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-4 text-sm">
+                <div className="grid gap-2">
+                  {fusion.signals.map((s) => (
+                    <div key={s.key} className="grid grid-cols-[9rem_1fr_3rem] items-center gap-2">
+                      <span className="text-muted-foreground">{s.label}</span>
+                      <span className="h-2 rounded-full bg-muted">
+                        <span
+                          className="block h-2 rounded-full bg-primary"
+                          style={{ width: `${s.value}%` }}
+                        />
+                      </span>
+                      <span className="text-right text-xs text-muted-foreground">{s.weight}%</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {["App", "WhatsApp", "SMS", "IVR call"].map((chan) => (
+                    <Button
+                      key={chan}
+                      size="sm"
+                      variant="outline"
+                      onClick={() => toast.success(`Alert queued to ${chan}.`)}
+                    >
+                      Send by {chan}
+                    </Button>
+                  ))}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  This check was added to the {block.id} verification queue for the block officer.
+                </p>
+              </CardContent>
+            </Card>
+          ) : null}
+
+
+
           {result ? (
             <Card className="shadow-field">
               <CardHeader>
