@@ -33,6 +33,13 @@ export function SiteHeader() {
           >
             Check a crop
           </Link>
+          <Link
+            to="/dashboard"
+            className="rounded-lg px-3 py-2 opacity-85 transition hover:bg-leaf-foreground/10 hover:opacity-100"
+          >
+            Officer dashboard
+          </Link>
+
           {user ? (
             <>
               <Link
