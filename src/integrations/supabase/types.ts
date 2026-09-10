@@ -14,16 +14,185 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      contributor_requests: {
+        Row: {
+          contact_email: string | null
+          created_at: string
+          id: string
+          institute_type: string
+          organisation: string
+          registration_code: string
+          reviewed_at: string | null
+          reviewer_notes: string | null
+          status: Database["public"]["Enums"]["review_status"]
+          user_id: string
+        }
+        Insert: {
+          contact_email?: string | null
+          created_at?: string
+          id?: string
+          institute_type: string
+          organisation: string
+          registration_code: string
+          reviewed_at?: string | null
+          reviewer_notes?: string | null
+          status?: Database["public"]["Enums"]["review_status"]
+          user_id: string
+        }
+        Update: {
+          contact_email?: string | null
+          created_at?: string
+          id?: string
+          institute_type?: string
+          organisation?: string
+          registration_code?: string
+          reviewed_at?: string | null
+          reviewer_notes?: string | null
+          status?: Database["public"]["Enums"]["review_status"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      dataset_entries: {
+        Row: {
+          condition: Database["public"]["Enums"]["crop_condition"]
+          created_at: string
+          crop: string
+          disease: string
+          id: string
+          image_path: string
+          notes: string | null
+          source: string | null
+          status: Database["public"]["Enums"]["review_status"]
+          user_id: string
+        }
+        Insert: {
+          condition: Database["public"]["Enums"]["crop_condition"]
+          created_at?: string
+          crop: string
+          disease: string
+          id?: string
+          image_path: string
+          notes?: string | null
+          source?: string | null
+          status?: Database["public"]["Enums"]["review_status"]
+          user_id: string
+        }
+        Update: {
+          condition?: Database["public"]["Enums"]["crop_condition"]
+          created_at?: string
+          crop?: string
+          disease?: string
+          id?: string
+          image_path?: string
+          notes?: string | null
+          source?: string | null
+          status?: Database["public"]["Enums"]["review_status"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          organisation: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          organisation?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          organisation?: string | null
+        }
+        Relationships: []
+      }
+      scans: {
+        Row: {
+          advice: string | null
+          condition: Database["public"]["Enums"]["crop_condition"]
+          confidence: number | null
+          created_at: string
+          crop: string | null
+          disease: string | null
+          id: string
+          image_path: string | null
+          summary: string | null
+          user_id: string
+        }
+        Insert: {
+          advice?: string | null
+          condition: Database["public"]["Enums"]["crop_condition"]
+          confidence?: number | null
+          created_at?: string
+          crop?: string | null
+          disease?: string | null
+          id?: string
+          image_path?: string | null
+          summary?: string | null
+          user_id: string
+        }
+        Update: {
+          advice?: string | null
+          condition?: Database["public"]["Enums"]["crop_condition"]
+          confidence?: number | null
+          created_at?: string
+          crop?: string | null
+          disease?: string | null
+          id?: string
+          image_path?: string | null
+          summary?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "contributor" | "user"
+      crop_condition: "healthy" | "mild" | "moderate" | "severe_rotten"
+      review_status: "pending" | "approved" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +319,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "contributor", "user"],
+      crop_condition: ["healthy", "mild", "moderate", "severe_rotten"],
+      review_status: ["pending", "approved", "rejected"],
+    },
   },
 } as const
