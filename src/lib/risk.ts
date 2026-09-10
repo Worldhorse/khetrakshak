@@ -29,12 +29,13 @@ export const CONDITION_SCORE: Record<Condition, number> = {
 
 export type RiskLevel = "low" | "moderate" | "high" | "critical";
 
-export const RISK_LABELS: Record<RiskLevel, { en: string; hi: string; className: string }> = {
-  low: { en: "Low risk", hi: "कम जोखिम", className: "bg-healthy" },
-  moderate: { en: "Moderate risk", hi: "मध्यम जोखिम", className: "bg-mild" },
-  high: { en: "High risk", hi: "अधिक जोखिम", className: "bg-moderate" },
-  critical: { en: "Critical risk", hi: "गंभीर जोखिम", className: "bg-severe" },
+export const RISK_LABELS: Record<RiskLevel, { en: string; hi: string; className: string; color: string }> = {
+  low: { en: "Low risk", hi: "कम जोखिम", className: "bg-healthy", color: "var(--healthy)" },
+  moderate: { en: "Moderate risk", hi: "मध्यम जोखिम", className: "bg-mild", color: "var(--mild)" },
+  high: { en: "High risk", hi: "अधिक जोखिम", className: "bg-moderate", color: "var(--moderate)" },
+  critical: { en: "Critical risk", hi: "गंभीर जोखिम", className: "bg-severe", color: "var(--severe)" },
 };
+
 
 export function riskLevel(score: number): RiskLevel {
   if (score < 30) return "low";
