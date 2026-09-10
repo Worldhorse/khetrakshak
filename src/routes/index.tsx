@@ -261,7 +261,7 @@ function Home() {
           </Card>
 
           {fusion ? (
-            <Card className="shadow-field">
+            <Card className="animate-scale-in shadow-field">
               <CardHeader>
                 <div className={`h-2 w-full rounded-full ${RISK_LABELS[fusion.level].className}`} />
                 <div className="flex items-center justify-between gap-2 pt-3">
@@ -289,20 +289,61 @@ function Home() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="grid gap-4 text-sm">
-                <div className="grid gap-2">
-                  {fusion.signals.map((s) => (
-                    <div key={s.key} className="grid grid-cols-[9rem_1fr_3rem] items-center gap-2">
-                      <span className="text-muted-foreground">{s.label}</span>
-                      <span className="h-2 rounded-full bg-muted">
-                        <span
-                          className="block h-2 rounded-full bg-primary"
-                          style={{ width: `${s.value}%` }}
+                <div className="grid items-center gap-4 sm:grid-cols-[11rem_1fr]">
+                  <div className="relative h-40">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={fusion.signals}
+                          dataKey="weight"
+                          nameKey="label"
+                          innerRadius={44}
+                          outerRadius={68}
+                          paddingAngle={3}
+                          animationDuration={900}
+                        >
+                          {fusion.signals.map((s, i) => (
+                            <Cell key={s.key} fill={SIGNAL_COLORS[i % SIGNAL_COLORS.length]} stroke="none" />
+                          ))}
+                        </Pie>
+                        <Tooltip
+                          contentStyle={{
+                            background: "var(--card)",
+                            border: "1px solid var(--border)",
+                            borderRadius: 12,
+                            color: "var(--foreground)",
+                          }}
+                          formatter={(v: number, n: string) => [`${v}% of the score`, n]}
                         />
-                      </span>
-                      <span className="text-right text-xs text-muted-foreground">{s.weight}%</span>
+                      </PieChart>
+                    </ResponsiveContainer>
+                    <div className="pointer-events-none absolute inset-0 grid place-content-center text-center">
+                      <p className="font-display text-2xl font-semibold">{fusion.score}</p>
+                      <p className="text-[10px] text-muted-foreground">/ 100</p>
                     </div>
-                  ))}
+                  </div>
+                  <div className="grid gap-2">
+                    {fusion.signals.map((s, i) => (
+                      <div key={s.key} className="grid grid-cols-[8rem_1fr_3rem] items-center gap-2">
+                        <span className="flex items-center gap-2 text-muted-foreground">
+                          <span
+                            className="size-2 shrink-0 rounded-full"
+                            style={{ background: SIGNAL_COLORS[i % SIGNAL_COLORS.length] }}
+                          />
+                          {s.label}
+                        </span>
+                        <span className="h-2 rounded-full bg-muted">
+                          <span
+                            className="block h-2 origin-left rounded-full bg-primary transition-all duration-700 ease-out"
+                            style={{ width: `${s.value}%` }}
+                          />
+                        </span>
+                        <span className="text-right text-xs text-muted-foreground">{s.weight}%</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
+
                 <div className="flex flex-wrap gap-2">
                   {["App", "WhatsApp", "SMS", "IVR call"].map((chan) => (
                     <Button
