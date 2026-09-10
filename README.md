@@ -1,26 +1,30 @@
-# Crop Health Guardian
+[# KhetRakshak] 
 
-Build an app that has two features 1.) takes input from the farmer to detect crop disease in plants and segregates them into 4 categories of condition of crop and 2) A separate option for medical institutes/ doctors and government bodies to update the crop disease image dataset using their registration codes and password (login), which will be verified by database manager. Use existing freely available crop diseases datasets online to get basic disease detection started.
+KhetRakshak is a web app for detecting crop diseases using images.
 
-This project was built with [Lovable](https://lovable.dev).
+The project is currently in development and aims to help farmers identify crop health issues quickly and make agricultural information more accessible.
 
-**Live app**: https://khetrakshak.lovable.app
+# Tech Stack
 
-## Build with Lovable
+* React + TypeScript
+* Vite
+* Tailwind CSS
+* Supabase
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/5225c373-0f5a-4379-8bee-d1ca507c4507).
+# Run Locally
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+```bash
+git clone https://github.com/Worldhorse/khetrakshak.git
+cd khetrakshak
+npm install
 npm run dev
 ```
+
+# Live Demo
+
+https://khetrakshak.lovable.app
+
+# Status
+🚧 Work in progress.
+
+[ P.S We assure you that if we are selected, we will improve the README to a whole new level :) ]
