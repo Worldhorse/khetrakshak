@@ -24,7 +24,7 @@ export function SiteHeader() {
           <span className="grid size-9 place-items-center rounded-xl bg-leaf-foreground/10">
             <Leaf className="size-5" />
           </span>
-          <span className="font-display text-lg font-semibold">CropCheck</span>
+          <span className="font-display text-lg font-semibold">KhetRakshak</span>
         </Link>
         <nav className="flex items-center gap-1 text-sm">
           <Link

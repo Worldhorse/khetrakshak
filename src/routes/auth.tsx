@@ -12,13 +12,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Institute Login | CropCheck Crop Disease Detection" },
+      { title: "Institute Login | KhetRakshak Crop Disease Detection" },
       {
         name: "description",
         content:
-          "Sign in or register as a medical institute, plant doctor or government body to contribute verified crop disease images to the CropCheck dataset.",
+          "Sign in or register as a medical institute, plant doctor or government body to contribute verified crop disease images to the KhetRakshak dataset.",
       },
-      { property: "og:title", content: "Institute Login | CropCheck" },
+      { property: "og:title", content: "Institute Login | KhetRakshak" },
       {
         property: "og:description",
         content: "Registered institutes and government bodies sign in here to submit crop disease images.",
