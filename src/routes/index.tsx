@@ -67,7 +67,13 @@ function Home() {
   const [cropHint, setCropHint] = useState("");
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<DetectionResult | null>(null);
+  const [blockId, setBlockId] = useState(BLOCKS[0]!.id);
+  const [trap, setTrap] = useState("");
+  const [fusion, setFusion] = useState<Fusion | null>(null);
+  const [lang, setLang] = useState<"en" | "hi">("en");
   const fileRef = useRef<HTMLInputElement>(null);
+
+  const block = BLOCKS.find((b) => b.id === blockId)!;
 
   function onFile(file: File | undefined) {
     if (!file) return;
@@ -79,6 +85,7 @@ function Home() {
     reader.onload = () => {
       setPreview(reader.result as string);
       setResult(null);
+      setFusion(null);
     };
     reader.readAsDataURL(file);
   }
@@ -87,18 +94,40 @@ function Home() {
     if (!preview) return;
     setBusy(true);
     setResult(null);
+    setFusion(null);
     try {
       const res = await detect({
         data: { imageDataUrl: preview, ...(cropHint ? { cropHint } : {}) },
       });
       setResult(res);
-      if (!res.isPlant) toast.warning("That photo doesn't look like a crop. Try a clear leaf close-up.");
+      if (!res.isPlant) {
+        toast.warning("That photo doesn't look like a crop. Try a clear leaf close-up.");
+        return;
+      }
+      const f = fuseRisk({
+        condition: res.condition,
+        confidence: res.confidence,
+        block,
+        trapCount: trap.trim() === "" ? null : Number(trap),
+      });
+      setFusion(f);
+      addSubmission({
+        id: crypto.randomUUID(),
+        at: Date.now(),
+        blockId: block.id,
+        crop: res.crop,
+        disease: res.disease,
+        condition: res.condition,
+        score: f.score,
+        status: "pending",
+      });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "The check failed. Please try again.");
     } finally {
       setBusy(false);
     }
   }
+
 
   return (
     <div className="min-h-screen bg-background">
